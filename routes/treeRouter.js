@@ -5,39 +5,59 @@ var treeRouter = module.exports = new Router();
 
 treeRouter.get('/trees', (req, res) => {
   var id = req.url.split('/')[2];
+  console.log(id);
 
-  if (!id) {
-    res.writeHead(500, {'content-type': 'text/html'});
-    res.write('<h2>welcome to the parking lot</h2>');
-    return res.end();
-  }
+  if (!id) return treeRouter.respond(res, 200, '<h2>welcome to the parking lot</h2>');
 
-  fs.readFile(__dirname + '/../trees/tr'+id+'.json', (err, data) => {
-    var tree;
-    if (err) tree = {'name':'park bench'};
-    else tree = JSON.parse(data);
+  fs.readFile(__dirname + '/../data/speciess.json', (err, data) => {
+    var species;
+    if (err) return treeRouter.respondErr(res, 500, 'error reading from species.json')
+    else {
+      var speciess = JSON.parse(data).speciess;
+      var matches = speciess.filter((species)=> {
+        return species.id === id;
+      });
+      species = matches[0] || {'id':'park bench'};
+    }
 
-    res.writeHead(200, {'content-type': 'text/html'});
-    res.write('here is your tree:');
-    res.write('<h1>'+tree.name+'</h1>');
-    res.end();
+    console.log(species);
+    return treeRouter.respond(res, 200, '<h1>'+species.id+'</h1>');
+
+    // res.writeHead(200, {'content-type': 'text/html'});
+    // res.write('here is your tree:');
+    // res.write('<h1>'+species.id+'</h1>');
+    // res.end();
   });
 });
 
 treeRouter.post('/trees', (req, res) => {
 
-  fs.readdir(__dirname + '/../trees', (err, files) => {
-    if (err) {
-      res.writeHead(500, {'content-type': 'text/html'});
-      res.end();
-    }
-    var tree = {id: files.length, name: req.headers.name};
+  fs.readFile(__dirname + '/../data/speciess.json', (err, data) => {
+    if (err) return treeRouter.respondErr(res, 500, "error reading from species.json");
+    var speciess = JSON.parse(data).speciess;
+    var species = {"id":req.headers.name.replace(" ", "-")}
+    speciess.push(species);
+    console.log({"speciess":speciess});
 
-    fs.writeFile(__dirname + '/../trees/tr'+files.length+'.json', JSON.stringify(tree), (err) => {
-      if (err) res.writeHead(500, {'content-type': 'text/html'});
-      else res.writeHead(200, {'content-type': 'text/html'});
-      res.end();
+    fs.writeFile(__dirname + '/../data/speciess.json', JSON.stringify({"speciess":speciess}), (err) => {
+      if (err) return treeRouter.respondErr(res, 500, "error writing to species.json");
+      return treeRouter.respond(res, 200);
     });
+
   });
+
+  // fs.readdir(__dirname + '/../trees', (err, files) => {
+  //   if (err) {
+  //     res.writeHead(500, {'content-type': 'text/html'});
+  //     res.end();
+  //   }
+  //   var tree = {id: files.length, name: req.headers.name};
+  //
+  //   fs.writeFile(__dirname + '/../trees/tr'+files.length+'.json', JSON.stringify(tree), (err) => {
+  //     if (err) res.writeHead(500, {'content-type': 'text/html'});
+  //     else res.writeHead(200, {'content-type': 'text/html'});
+  //     res.end();
+  //   });
+  // });
 
 });

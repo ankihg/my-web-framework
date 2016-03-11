@@ -5,4 +5,4 @@ http.createServer((req, res) => {
 
   treeRouter.route(req, res);
 
-}).listen(3000, () => console.log('server speaking.'))
+}).listen(3000, () => console.log('server speaking.'));
