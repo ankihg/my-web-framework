@@ -2,6 +2,7 @@ var fs = require('fs');
 var Router = require(__dirname + '/../lib/router.js');
 
 var treeRouter = module.exports = new Router();
+var Species = require(__dirname + '/../lib/species.js');
 
 treeRouter.get('/trees', (req, res) => {
   var id = req.url.split('/')[2];
@@ -17,11 +18,11 @@ treeRouter.get('/trees', (req, res) => {
       var matches = speciess.filter((species)=> {
         return species.id === id;
       });
-      species = matches[0] || {'id':'park bench'};
+      species = new Species(matches[0] || {'id':'park_bench'});
     }
 
     console.log(species);
-    return treeRouter.respond(res, 200, '<h1>'+species.id+'</h1>');
+    return treeRouter.respond(res, 200, '<h1>'+species.name+'</h1>');
 
     // res.writeHead(200, {'content-type': 'text/html'});
     // res.write('here is your tree:');
@@ -35,7 +36,7 @@ treeRouter.post('/trees', (req, res) => {
   fs.readFile(__dirname + '/../data/speciess.json', (err, data) => {
     if (err) return treeRouter.respondErr(res, 500, "error reading from species.json");
     var speciess = JSON.parse(data).speciess;
-    var species = {"id":req.headers.name.replace(" ", "-")}
+    var species = {"id":req.headers.name.replace(" ", "_")}
     speciess.push(species);
     console.log({"speciess":speciess});
 
