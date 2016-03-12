@@ -21,7 +21,7 @@ treeRouter.get('/trees', (req, res) => {
     else {
       var speciess = JSON.parse(data).speciess.map((d) => new Species(d));
 
-      if (!id) return treeRouter.respond(res, 200, plz.listAll(speciess));
+      if (!id) return treeRouter.respond(res, 200, `<h2>${plz.listAll(speciess)}</h2>`);
 
       var matches = speciess.filter((species)=> {
         return species.id === id;
