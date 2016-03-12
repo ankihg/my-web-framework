@@ -71,14 +71,7 @@ treeRouter.put('/trees',(req, res) => {
 
       if (!id) return treeRouter.respond(res, 200);
 
-      // var matches = speciess.filter((species) => {
-      //   return species.id === id;
-      // });
-      // species = matches[0] || {'id':'park_bench'};
-
       //update id matches to update
-      console.log('here i am');
-      console.log(req.headers.update);
       speciess.forEach((species, i, arr) => { if (species.id === id) arr[i] = new Species(JSON.parse(req.headers.update));  });
 
       fs.writeFile(__dirname + '/../data/speciess.json', JSON.stringify({"speciess":speciess}), (err) => {
@@ -90,6 +83,4 @@ treeRouter.put('/trees',(req, res) => {
 
     return treeRouter.respond(res, 200);
   });
-
-
 });
