@@ -8,7 +8,7 @@ describe('server testing', () => {
 
   it('should get', (done) => {
     request('localhost:3000')
-    .get('/trees/cunninghamia-lanceolata')
+    .get('/speciess/cunninghamia-lanceolata')
     .end((err, res) => {
       expect(err).eql(null);
       expect(res).status(200);
@@ -18,7 +18,7 @@ describe('server testing', () => {
 
   it('should post cunninghamia lanceolata', (done) => {
     request('localhost:3000')
-    .post('/trees')
+    .post('/speciess')
     .set({'name':'cunninghamia lanceolata'})
     .end((err, res) => {
       expect(err).eql(null);
@@ -29,7 +29,7 @@ describe('server testing', () => {
 
   it('should post cedrus deodara', (done) => {
     request('localhost:3000')
-    .post('/trees')
+    .post('/speciess')
     .set({'name':'cedrus deodara'})
     .end((err, res) => {
       expect(err).eql(null);
@@ -40,7 +40,7 @@ describe('server testing', () => {
 
   it('should post cedrus deodara', (done) => {
     request('localhost:3000')
-    .post('/trees')
+    .post('/speciess')
     .set({'name':'cedrus atlantica'})
     .end((err, res) => {
       expect(err).eql(null);
@@ -51,7 +51,7 @@ describe('server testing', () => {
 
   it('should put plzus responda to cedrus deodara', (done) => {
     request('localhost:3000')
-    .put('/trees/cedrus_deodara')
+    .put('/speciess/cedrus_deodara')
     .set({"update":"{\"id\":\"plzus_responda\"}"})
     .end((err, res) => {
       expect(err).eql(null);
@@ -62,7 +62,7 @@ describe('server testing', () => {
 
   it('should put plzus responda to cedrus deodara', (done) => {
     request('localhost:3000')
-    .put('/trees/plzus_responda')
+    .put('/speciess/plzus_responda')
     .set({"update":"{\"id\":\"cedrus_deodara\"}"})
     .end((err, res) => {
       expect(err).eql(null);

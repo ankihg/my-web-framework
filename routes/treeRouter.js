@@ -6,7 +6,7 @@ var Species = require(__dirname + '/../lib/tree/species.js');
 var plz = require(__dirname+'/../lib/responder.js');
 
 
-treeRouter.get('/trees', (req, res) => {
+treeRouter.get('/speciess', (req, res) => {
   console.log('GET request for '+req.url);
 
   var id = req.url.split('/')[2];
@@ -34,7 +34,7 @@ treeRouter.get('/trees', (req, res) => {
   });
 });
 
-treeRouter.post('/trees', (req, res) => {
+treeRouter.post('/speciess', (req, res) => {
   console.log('POST request for '+req.url);
 
   var id = req.headers.name.replace(" ", "_");
@@ -59,8 +59,8 @@ treeRouter.post('/trees', (req, res) => {
   });
 });
 
-treeRouter.put('/trees',(req, res) => {
-  console.log('PUT request for'+req.url);
+treeRouter.put('/speciess',(req, res) => {
+  console.log('PUT request for '+req.url);
   var id = req.url.split('/')[2];
 
   fs.readFile(__dirname + '/../data/speciess.json', (err, data) => {
@@ -83,4 +83,12 @@ treeRouter.put('/trees',(req, res) => {
 
     return treeRouter.respond(res, 200);
   });
+});
+
+treeRouter.del('/speciess', (req, res) => {
+  console.log('DEL request for '+req.url);
+  var id = req.url.split('/')[2];
+
+
+
 });
