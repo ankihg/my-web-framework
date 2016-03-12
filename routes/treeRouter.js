@@ -2,7 +2,9 @@ var fs = require('fs');
 var Router = require(__dirname + '/../lib/router.js');
 
 var treeRouter = module.exports = new Router();
-var Species = require(__dirname + '/../lib/species.js');
+var Species = require(__dirname + '/../lib/tree/species.js');
+var plz = require(__dirname+'/../lib/responder.js');
+
 
 treeRouter.get('/trees', (req, res) => {
   console.log('GET request for '+req.url);
@@ -10,17 +12,21 @@ treeRouter.get('/trees', (req, res) => {
   var id = req.url.split('/')[2];
   console.log(id);
 
-  if (!id) return treeRouter.respond(res, 200, '<h2>welcome to the parking lot</h2>');
+  // if (!id) return treeRouter.respond(res, 200, '<h2>welcome to the parking lot</h2>');
+
 
   fs.readFile(__dirname + '/../data/speciess.json', (err, data) => {
     var species;
     if (err) return treeRouter.respondErr(res, 500, 'error reading from species.json')
     else {
-      var speciess = JSON.parse(data).speciess;
+      var speciess = JSON.parse(data).speciess.map((d) => new Species(d));
+
+      if (!id) return treeRouter.respond(res, 200, plz.listAll(speciess));
+
       var matches = speciess.filter((species)=> {
         return species.id === id;
       });
-      species = new Species(matches[0] || {'id':'park_bench'});
+      species = matches[0] || {'id':'park_bench'};
     }
 
     console.log(species);
