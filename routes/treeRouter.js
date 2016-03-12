@@ -113,8 +113,6 @@ treeRouter.get('/trees', (req, res) => {
   var id = req.url.split('/')[2];
   console.log(id);
 
-  // if (!id) return treeRouter.respond(res, 200, '<h2>welcome to the parking lot</h2>');
-
 
   fs.readFile(__dirname + '/../data/trees.json', (err, data) => {
     var tree;
