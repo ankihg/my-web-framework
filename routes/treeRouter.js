@@ -3,6 +3,7 @@ var Router = require(__dirname + '/../lib/router.js');
 
 var treeRouter = module.exports = new Router();
 var Species = require(__dirname + '/../lib/tree/species.js');
+var Tree = require(__dirname + '/../lib/tree/tree.js')
 var plz = require(__dirname+'/../lib/responder.js');
 
 
@@ -104,5 +105,30 @@ treeRouter.del('/speciess', (req, res) => {
     });
 
   });
+});
 
+treeRouter.get('/trees', (req, res) => {
+  console.log('GET request for '+req.url);
+
+  var id = req.url.split('/')[2];
+  console.log(id);
+
+  // if (!id) return treeRouter.respond(res, 200, '<h2>welcome to the parking lot</h2>');
+
+
+  fs.readFile(__dirname + '/../data/trees.json', (err, data) => {
+    var tree;
+    if (err) return treeRouter.respondErr(res, 500, 'error reading from species.json')
+    var trees = JSON.parse(data).trees.map((d) => new Tree(d));
+
+    if (!id) return treeRouter.respond(res, 200, `<h2>${plz.listAll(trees)}</h2>`);
+
+    var matches = trees.filter((tree)=> {
+      return tree.id === id;
+    });
+    tree = matches[0] || new Tree({'speciesID':'park_bench'});
+
+    console.log(tree);
+    return treeRouter.respond(res, 200, '<h1>'+tree.name()+'</h1>');
+  });
 });
