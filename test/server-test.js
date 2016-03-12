@@ -38,7 +38,7 @@ describe('server testing', () => {
     });
   });
 
-  it('should post cedrus deodara', (done) => {
+  it('should post cedrus atlantica', (done) => {
     request('localhost:3000')
     .post('/speciess')
     .set({'name':'cedrus atlantica'})
@@ -71,5 +71,25 @@ describe('server testing', () => {
     });
   });
 
+  it('should delete cedrus deodara', (done) => {
+    request('localhost:3000')
+    .del('/speciess/cedrus_deodara')
+    .end((err, res) => {
+      expect(err).eql(null);
+      expect(res).status(200);
+      done();
+    });
+  });
+
+  it('should post cedrus deodara', (done) => {
+    request('localhost:3000')
+    .post('/speciess')
+    .set({'name':'cedrus deodara'})
+    .end((err, res) => {
+      expect(err).eql(null);
+      expect(res).status(200);
+      done();
+    });
+  });
 
 });
