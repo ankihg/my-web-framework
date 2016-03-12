@@ -49,4 +49,27 @@ describe('server testing', () => {
     });
   });
 
+  it('should put plzus responda to cedrus deodara', (done) => {
+    request('localhost:3000')
+    .put('/trees/cedrus_deodara')
+    .set({"update":"{\"id\":\"plzus_responda\"}"})
+    .end((err, res) => {
+      expect(err).eql(null);
+      expect(res).status(200);
+      done();
+    });
+  });
+
+  it('should put plzus responda to cedrus deodara', (done) => {
+    request('localhost:3000')
+    .put('/trees/plzus_responda')
+    .set({"update":"{\"id\":\"cedrus_deodara\"}"})
+    .end((err, res) => {
+      expect(err).eql(null);
+      expect(res).status(200);
+      done();
+    });
+  });
+
+
 });
