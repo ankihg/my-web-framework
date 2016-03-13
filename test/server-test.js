@@ -60,7 +60,7 @@ describe('crud testing for species', () => {
     });
   });
 
-  it('should put plzus responda to cedrus deodara', (done) => {
+  it('should put cedrus deodara to plzus responda', (done) => {
     request('localhost:3000')
     .put('/speciess/plzus_responda')
     .set({"update":"{\"id\":\"cedrus_deodara\"}"})

@@ -17,20 +17,16 @@ treeRouter.get('/speciess', (req, res) => {
 
 
   fs.readFile(__dirname + '/../data/speciess.json', (err, data) => {
-    var species;
     if (err) return treeRouter.respondErr(res, 500, 'error reading from species.json')
-    else {
-      var speciess = JSON.parse(data).speciess.map((d) => new Species(d));
+    var speciess = JSON.parse(data).speciess.map((d) => new Species(d));
 
-      if (!id) return treeRouter.respond(res, 200, `<h2>${plz.listAll(speciess)}</h2>`);
+    if (!id) return treeRouter.respond(res, 200, `<h2>${plz.listAll(speciess)}</h2>`);
 
-      var matches = speciess.filter((species)=> {
-        return species.id === id;
-      });
-      species = matches[0] || new Species({'id':'park_bench'});
-    }
+    var matches = speciess.filter((species)=> {
+      return species.id === id;
+    });
+    var species = matches[0] || new Species({'id':'park_bench'});
 
-    console.log(species);
     return treeRouter.respond(res, 200, '<h1>'+species.name()+'</h1>');
   });
 });
@@ -49,7 +45,6 @@ treeRouter.post('/speciess', (req, res) => {
 
     var species = {"id":id}
     speciess.push(species);
-    console.log({"speciess":speciess});
 
     fs.writeFile(__dirname + '/../data/speciess.json', JSON.stringify({"speciess":speciess}), (err) => {
       console.log(`WRITE ${id} to speciess.json`);
@@ -65,22 +60,22 @@ treeRouter.put('/speciess',(req, res) => {
   var id = req.url.split('/')[2];
 
   fs.readFile(__dirname + '/../data/speciess.json', (err, data) => {
-    var species;
+    // var species;
     if (err) return treeRouter.respondErr(res, 500, 'error reading from species.json')
-    else {
-      var speciess = JSON.parse(data).speciess.map((d) => new Species(d));
 
-      if (!id) return treeRouter.respond(res, 200);
+    var speciess = JSON.parse(data).speciess.map((d) => new Species(d));
 
-      //update id matches to update
-      speciess.forEach((species, i, arr) => { if (species.id === id) arr[i] = new Species(JSON.parse(req.headers.update));  });
+    if (!id) return treeRouter.respond(res, 200);
 
-      fs.writeFile(__dirname + '/../data/speciess.json', JSON.stringify({"speciess":speciess}), (err) => {
-        if (err) return treeRouter.respondErr(res, 500, "error writing to species.json");
-        console.log(`WRITE ${id} to speciess.json`);
-        return treeRouter.respond(res, 200);
-      });
-    }
+    //update id matches to update
+    speciess.forEach((species, i, arr) => { if (species.id === id) arr[i] = new Species(JSON.parse(req.headers.update));  });
+
+    fs.writeFile(__dirname + '/../data/speciess.json', JSON.stringify({"speciess":speciess}), (err) => {
+      if (err) return treeRouter.respondErr(res, 500, "error writing to species.json");
+      console.log(`WRITE ${id} to speciess.json`);
+      return treeRouter.respond(res, 200);
+    });
+
 
     return treeRouter.respond(res, 200);
   });
@@ -111,11 +106,9 @@ treeRouter.get('/trees', (req, res) => {
   console.log('GET request for '+req.url);
 
   var id = req.url.split('/')[2];
-  console.log(id);
 
 
   fs.readFile(__dirname + '/../data/trees.json', (err, data) => {
-    var tree;
     if (err) return treeRouter.respondErr(res, 500, 'error reading from species.json')
     var trees = JSON.parse(data).trees.map((d) => new Tree(d));
 
@@ -124,9 +117,8 @@ treeRouter.get('/trees', (req, res) => {
     var matches = trees.filter((tree)=> {
       return tree.id === id;
     });
-    tree = matches[0] || new Tree({'speciesID':'park_bench'});
+    var tree = matches[0] || new Tree({'speciesID':'park_bench'});
 
-    console.log(tree);
     return treeRouter.respond(res, 200, '<h1>'+tree.name()+'</h1>');
   });
 });
