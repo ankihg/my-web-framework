@@ -4,11 +4,11 @@ chai.use(require('chai-http'));
 var request = chai.request;
 var expect = chai.expect;
 
-describe('server testing', () => {
+describe('crud testing for species', () => {
 
   it('should get', (done) => {
     request('localhost:3000')
-    .get('/speciess/cunninghamia-lanceolata')
+    .get('/speciess/cunninghamia_lanceolata')
     .end((err, res) => {
       expect(err).eql(null);
       expect(res).status(200);
@@ -88,6 +88,21 @@ describe('server testing', () => {
     .end((err, res) => {
       expect(err).eql(null);
       expect(res).status(200);
+      done();
+    });
+  });
+});
+
+describe('crud testing for trees', () => {
+
+  it('should get cedrus deodara at lat: 47.665392 and lng: -122.310876', (done) => {
+    request('localhost:3000')
+    .get('/trees/cedrus_deodara@47.665392&-122.310876')
+    .end((err, res) => {
+      expect(err).eql(null);
+      expect(res).status(200);
+      // console.log(typeof res.text);
+      // expect(res.text).eql('<h1>cedrus deodara @ lat: 47.665392 lng: -122.310876</h1>');
       done();
     });
   });
