@@ -12,47 +12,18 @@ treeRouter.get('/speciess', (req, res) => {
   console.log('GET request for '+req.url);
 
   var id = req.url.split('/')[2];
-  console.log(id);
-
-  // if (!id) return treeRouter.respond(res, 200, '<h2>welcome to the parking lot</h2>');
-
-
-  fs.readFile(__dirname + '/../data/speciess.json', (err, data) => {
-    if (err) return treeRouter.respondErr(res, 500, 'error reading from species.json')
-    var speciess = JSON.parse(data).speciess.map((d) => new Species(d));
-
-    if (!id) return treeRouter.respond(res, 200, `<h2>${treeRouter.plz.listAll(speciess)}</h2>`);
-
-    var matches = speciess.filter((species)=> {
-      return species.id === id;
-    });
-    var species = matches[0] || new Species({'id':'park_bench'});
-
-    return treeRouter.respond(res, 200, '<h1>'+species.name()+'</h1>');
+  treeRouter.fm.read('speciess', id, Species, (err, fileReport) => {
+      if (err) return treeRouter.respondErr(res, 500, fileReport.msg);
+      if (fileReport.delivery) return treeRouter.respond(res, 200, `<h1>${fileReport.delivery.name()}</h1>`);
+      if (fileReport.all) return treeRouter.respond(res, 200, `<h2>${treeRouter.plz.listAll(fileReport.all)}</h2>`);
   });
 });
 
 treeRouter.post('/speciess', (req, res) => {
   console.log('POST request for '+req.url);
-
-  var id = req.headers.id;
-
-  fs.readFile(__dirname + '/../data/speciess.json', (err, data) => {
-    if (err) return treeRouter.respondErr(res, 500, "error reading from species.json");
-    var speciess = JSON.parse(data).speciess;
-
-    //keep speciess unique
-    if (speciess.filter((s) => s.id === id).length) return treeRouter.respond(res, 200);
-
-    var species = {"id":id}
-    speciess.push(species);
-
-    fs.writeFile(__dirname + '/../data/speciess.json', JSON.stringify({"speciess":speciess}), (err) => {
-      console.log(`WRITE ${id} to speciess.json`);
-      if (err) return treeRouter.respondErr(res, 500, "error writing to species.json");
-      return treeRouter.respond(res, 200);
-    });
-
+  treeRouter.fm.create('speciess', new Species(req.headers), (err, fileReport) => {
+    if (err) return treeRouter.respondErr(res, 500, fileReport.msg);
+    treeRouter.respond(res, fileReport.status);
   });
 });
 
@@ -60,27 +31,86 @@ treeRouter.put('/speciess',(req, res) => {
   console.log('PUT request for '+req.url);
   var id = req.url.split('/')[2];
 
-  fs.readFile(__dirname + '/../data/speciess.json', (err, data) => {
-    // var species;
-    if (err) return treeRouter.respondErr(res, 500, 'error reading from species.json')
-
-    var speciess = JSON.parse(data).speciess.map((d) => new Species(d));
-
-    if (!id) return treeRouter.respond(res, 200);
-
-    //update id matches to update
-    speciess.forEach((species, i, arr) => { if (species.id === id) arr[i] = new Species(JSON.parse(req.headers.update));  });
-
-    fs.writeFile(__dirname + '/../data/speciess.json', JSON.stringify({"speciess":speciess}), (err) => {
-      if (err) return treeRouter.respondErr(res, 500, "error writing to species.json");
-      console.log(`WRITE ${id} to speciess.json`);
-      return treeRouter.respond(res, 200);
-    });
-
-
-    return treeRouter.respond(res, 200);
+  treeRouter.fm.update('speciess', id, req.headers.update, Species, (err, fileReport) => {
+    if (err) return treeRouter.respondErr(res, 500, fileReport.msg);
+    treeRouter.respond(res, fileReport.status);
   });
+
 });
+
+// treeRouter.get('/speciess', (req, res) => {
+//   console.log('GET request for '+req.url);
+//
+//   var id = req.url.split('/')[2];
+//   console.log(id);
+//
+//   // if (!id) return treeRouter.respond(res, 200, '<h2>welcome to the parking lot</h2>');
+//
+//
+//   fs.readFile(__dirname + '/../data/speciess.json', (err, data) => {
+//     if (err) return treeRouter.respondErr(res, 500, 'error reading from species.json')
+//     var speciess = JSON.parse(data).speciess.map((d) => new Species(d));
+//
+//     if (!id) return treeRouter.respond(res, 200, `<h2>${treeRouter.plz.listAll(speciess)}</h2>`);
+//
+//     var matches = speciess.filter((species)=> {
+//       return species.id === id;
+//     });
+//     var species = matches[0] || new Species({'id':'park_bench'});
+//
+//     return treeRouter.respond(res, 200, '<h1>'+species.name()+'</h1>');
+//   });
+// });
+
+// treeRouter.post('/speciess', (req, res) => {
+//   console.log('POST request for '+req.url);
+//
+//   var id = req.headers.id;
+//
+//   fs.readFile(__dirname + '/../data/speciess.json', (err, data) => {
+//     if (err) return treeRouter.respondErr(res, 500, "error reading from species.json");
+//     var speciess = JSON.parse(data).speciess;
+//
+//     //keep speciess unique
+//     if (speciess.filter((s) => s.id === id).length) return treeRouter.respond(res, 200);
+//
+//     var species = {"id":id}
+//     speciess.push(species);
+//
+//     fs.writeFile(__dirname + '/../data/speciess.json', JSON.stringify({"speciess":speciess}), (err) => {
+//       console.log(`WRITE ${id} to speciess.json`);
+//       if (err) return treeRouter.respondErr(res, 500, "error writing to species.json");
+//       return treeRouter.respond(res, 200);
+//     });
+//
+//   });
+// });
+
+// treeRouter.put('/speciess',(req, res) => {
+//   console.log('PUT request for '+req.url);
+//   var id = req.url.split('/')[2];
+//
+//   fs.readFile(__dirname + '/../data/speciess.json', (err, data) => {
+//     // var species;
+//     if (err) return treeRouter.respondErr(res, 500, 'error reading from species.json')
+//
+//     var speciess = JSON.parse(data).speciess.map((d) => new Species(d));
+//
+//     if (!id) return treeRouter.respond(res, 200);
+//
+//     //update id matches to update
+//     speciess.forEach((species, i, arr) => { if (species.id === id) arr[i] = new Species(JSON.parse(req.headers.update));  });
+//
+//     fs.writeFile(__dirname + '/../data/speciess.json', JSON.stringify({"speciess":speciess}), (err) => {
+//       if (err) return treeRouter.respondErr(res, 500, "error writing to species.json");
+//       console.log(`WRITE ${id} to speciess.json`);
+//       return treeRouter.respond(res, 200);
+//     });
+//
+//
+//     return treeRouter.respond(res, 200);
+//   });
+// });
 
 treeRouter.del('/speciess', (req, res) => {
   console.log('DEL request for '+req.url);
@@ -149,7 +179,7 @@ treeRouter.put('/trees',(req, res) => {
   console.log('PUT request for '+req.url);
   var id = req.url.split('/')[2];
 
-  treeRouter.fm.update('trees', id, req.headers, Tree, (err, fileReport) => {
+  treeRouter.fm.update('trees', id, req.headers.update, Tree, (err, fileReport) => {
     if (err) return treeRouter.respondErr(res, 500, fileReport.msg);
     treeRouter.respond(res, fileReport.status);
   });
