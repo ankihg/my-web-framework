@@ -107,4 +107,18 @@ describe('crud testing for trees', () => {
     });
   });
 
+  it('should post crataegus laevigata', (done) => {
+    request('localhost:3000')
+    .post('/trees')
+    .set({'speciesID':'crataegus laevigata'})
+    .set({'lat':'47.665777'})
+    .set({'lng':'-122.310836'})
+    .end((err, res) => {
+      expect(err).eql(null);
+      expect(res).status(200);
+      done();
+    });
+  });
+
+
 });

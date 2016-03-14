@@ -1,6 +1,1 @@
-{"trees":
-  [
-    {"speciesID":"cunninghamia_lanceolata"},
-    {"speciesID":"cedrus_deodara", "lat":47.665392, "lng":-122.310876}
-  ]
-}
+{"trees":[{"speciesID":"cunninghamia_lanceolata"},{"speciesID":"cedrus_deodara","lat":47.665392,"lng":-122.310876},{"speciesID":"crataegus_laevigata","lat":"47.665777","lng":"-122.310836"}]}

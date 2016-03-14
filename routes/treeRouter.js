@@ -122,3 +122,29 @@ treeRouter.get('/trees', (req, res) => {
     return treeRouter.respond(res, 200, '<h1>'+tree.name()+'</h1>');
   });
 });
+
+treeRouter.post('/trees', (req, res) => {
+  console.log('POST request for '+req.url);
+
+  var speciesID = req.headers.speciesid.replace(" ", "_");
+  var lat = req.headers.lat;
+  var lng = req.headers.lng;
+
+  fs.readFile(__dirname + '/../data/trees.json', (err, data) => {
+    if (err) return treeRouter.respondErr(res, 500, "error reading from trees.json");
+    var trees = JSON.parse(data).trees;
+
+    // //keep speciess unique
+    // if (trees.filter((t) => t.speciesID === speciesID).length) return treeRouter.respond(res, 200);
+
+    var tree = {"speciesID":speciesID, "lat":lat, "lng":lng};
+    trees.push(tree);
+
+    fs.writeFile(__dirname + '/../data/trees.json', JSON.stringify({"trees":trees}), (err) => {
+      console.log(`WRITE ${speciesID} to trees.json`);
+      if (err) return treeRouter.respondErr(res, 500, "error writing to trees.json");
+      return treeRouter.respond(res, 200);
+    });
+
+  });
+});
