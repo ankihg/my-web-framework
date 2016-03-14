@@ -34,7 +34,7 @@ treeRouter.get('/speciess', (req, res) => {
 treeRouter.post('/speciess', (req, res) => {
   console.log('POST request for '+req.url);
 
-  var id = req.headers.name.replace(" ", "_");
+  var id = req.headers.id;
 
   fs.readFile(__dirname + '/../data/speciess.json', (err, data) => {
     if (err) return treeRouter.respondErr(res, 500, "error reading from species.json");
@@ -117,7 +117,7 @@ treeRouter.get('/trees', (req, res) => {
     var matches = trees.filter((tree)=> {
       return tree.id === id;
     });
-    var tree = matches[0] || new Tree({'speciesID':'park_bench'});
+    var tree = matches[0] || new Tree({'id':'park_bench@55&55'});
 
     return treeRouter.respond(res, 200, '<h1>'+tree.name()+'</h1>');
   });
@@ -126,19 +126,18 @@ treeRouter.get('/trees', (req, res) => {
 treeRouter.post('/trees', (req, res) => {
   console.log('POST request for '+req.url);
 
-  var speciesID = req.headers.speciesid.replace(" ", "_");
-  var lat = req.headers.lat;
-  var lng = req.headers.lng;
-
   fs.readFile(__dirname + '/../data/trees.json', (err, data) => {
     if (err) return treeRouter.respondErr(res, 500, "error reading from trees.json");
 
-    var tree = {"speciesID":speciesID, "lat":lat, "lng":lng};
+    var tree = new Tree(req.headers); //headers has key id
     var trees = JSON.parse(data).trees;
+
+    //keep trees unique
+    if (trees.filter((t) => t.id === tree.id).length) return treeRouter.respond(res, 200);
     trees.push(tree);
 
     fs.writeFile(__dirname + '/../data/trees.json', JSON.stringify({"trees":trees}), (err) => {
-      console.log(`WRITE ${speciesID} to trees.json`);
+      console.log(`WRITE ${tree.speciesID()} to trees.json`);
       if (err) return treeRouter.respondErr(res, 500, "error writing to trees.json");
       return treeRouter.respond(res, 200);
     });
