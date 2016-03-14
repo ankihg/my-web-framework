@@ -110,7 +110,7 @@ describe('crud testing for trees', () => {
   it('should post crataegus laevigata at lat:47.665777 and lng:-122.310836', (done) => {
     request('localhost:3000')
     .post('/trees')
-    .set({'speciesID':'crataegus laevigata'})
+    .set({'speciesID':'crataegus_laevigata'})
     .set({'lat':'47.665777'})
     .set({'lng':'-122.310836'})
     .end((err, res) => {
@@ -134,6 +134,19 @@ describe('crud testing for trees', () => {
   it('should delete all plzus_responda@55&55', (done) => {
     request('localhost:3000')
     .del('/trees/plzus_responda@55&55')
+    .end((err, res) => {
+      expect(err).eql(null);
+      expect(res).status(200);
+      done();
+    });
+  });
+
+  it('should post cedrus_deodara at lat:47.665392 lng:-122.31087', (done) => {
+    request('localhost:3000')
+    .post('/trees')
+    .set({'speciesID':'cedrus_deodara'})
+    .set({'lat':'47.665392'})
+    .set({'lng':'-122.31087'})
     .end((err, res) => {
       expect(err).eql(null);
       expect(res).status(200);
