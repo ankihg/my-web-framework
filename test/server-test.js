@@ -128,6 +128,18 @@ describe('crud testing for trees', () => {
     });
   });
 
+  it('should post plzus responda at lat:55 and lng:55', (done) => {
+    request('localhost:3000')
+    .post('/trees')
+    .set({'id':'plzus_responda@55&55'})
+    .end((err, res) => {
+      expect(err).eql(null);
+      expect(res).status(200);
+      done();
+    });
+  });
+
+
   it('should put plzus_responda@55&55 to cedrus_deodara@47.665392&-122.310876', (done) => {
     request('localhost:3000')
     .put('/trees/cedrus_deodara@47.665392&-122.310876')
