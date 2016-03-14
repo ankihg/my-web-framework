@@ -171,3 +171,24 @@ treeRouter.put('/trees',(req, res) => {
     return treeRouter.respond(res, 200);
   });
 });
+
+treeRouter.del('/trees', (req, res) => {
+  console.log('DEL request for '+req.url);
+  var id = req.url.split('/')[2];
+  if (!id) return treeRouter.respond(res, 200);
+
+  fs.readFile(__dirname + '/../data/trees.json', (err, data) => {
+    if (err) return treeRouter.respondErr(res, 500, 'error reading from trees.json');
+    var trees = JSON.parse(data).trees.map((d) => new Tree(d));
+
+    //remove species with id from speciess
+    trees.forEach((tree, i, arr) => { if (tree.id === id) arr.splice(i, 1);  });
+
+    fs.writeFile(__dirname + '/../data/trees.json', JSON.stringify({"trees":trees}), (err) => {
+      if (err) return treeRouter.respondErr(res, 500, 'error writing to trees.json');
+      console.log(`DELETE ${id} from trees.json`);
+      return treeRouter.respond(res, 200);
+    });
+
+  });
+});

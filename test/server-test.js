@@ -131,4 +131,14 @@ describe('crud testing for trees', () => {
     });
   });
 
+  it('should delete all plzus_responda@55&55', (done) => {
+    request('localhost:3000')
+    .del('/trees/plzus_responda@55&55')
+    .end((err, res) => {
+      expect(err).eql(null);
+      expect(res).status(200);
+      done();
+    });
+  });
+
 });
